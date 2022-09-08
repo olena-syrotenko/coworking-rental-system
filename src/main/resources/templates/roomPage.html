@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Work Hub</title>
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700}" rel="stylesheet" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic}" rel="stylesheet" type="text/css" />
+    <link th:href= "@{/css/styles.css}" rel="stylesheet" />
+    <link th:href= "@{/css/mainInformationStyle.css}" rel="stylesheet" />
+    <link th:href= "@{/css/dateForm.css}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" th:href="@{https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css}" />
+</head>
+
+<body id = "page-top">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+        <div class="container px-4 px-lg-5">
+            <a  sec:authorize = "!isAuthenticated()" class="navbar-brand" href="/">Work Hub</a>
+            <a  sec:authorize = "hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')" class="navbar-brand" href="/tariff">Work Hub</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto my-2 my-lg-0">
+                    <li sec:authorize = "hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')"  class="nav-item"><a class="nav-link" href="/cabinet">Кабінет</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/tariff">Тарифи</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/equipment">Техніка</a></li>
+                    <li sec:authorize = "!isAuthenticated()" class="nav-item"><a class="nav-link" href="/login">Увійти</a></li>
+                    <li sec:authorize = "hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')" class="nav-item"><a class="nav-link" href="/logout">Вийти</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section id="pricing" class="g-pt-80 g-pb-80 page-section">
+        <div class="container px-4 px-lg-5">
+            <div class="u-heading-v2-3--bottom text-uppercase g-mb-30 text-center" id="pageTitle">
+                <p class="h2 u-heading-v2__title g-mb-10 g-font-weight-700 g-color-secondary">Кімнати</p>
+                <hr class="divider" />
+            </div>
+            <form method="post" th:object="${rentForm}" class="form-daterange">
+                <label for="periodrange" class="form-label-date">Період оренди</label>
+                <input id = "periodrange" type="text" name="daterange" class="form-input-daterange" required autocomplete="off" />
+
+                <div class="col-md-6 col-lg-3 align-self-end form-button-wrapper">
+                    <button type = "submit" class="btn btn-primary btn-block text-white form-submit-button">Доступні місця</button>
+                </div>
+
+                <input  type="hidden" name="dateFrom" th:field="*{dateFrom}" th:value = "${dateFrom}"/>
+                <input  type="hidden" name="dateTo" th:field="*{dateTo}" th:value = "${dateTo}"/>
+                <input  type="hidden" name="duration" th:value="${duration}"/>
+            </form>
+            <div class="row justify-content-center">
+                <div th:each="roomInfo : ${rooms}" class="col-lg-3 col-sm-6 price-item">
+                    <article  class="scale-down text-center u-block-hover g-brd-around g-bg-gray-light-v5 g-brd-gray-light-v4 g-color-black">
+                        <header class="g-bg-gray-light-v5 g-color-white-opacity-0_7 g-pa-20">
+                            <p th:utext="'ROOM ' + ${roomInfo.id}" class="h5 g-color-black text-uppercase g-mb-5">Room number</p>
+                        </header>
+                        <div class="item-image test">
+                            <img class="w-100" th:src="@{${roomInfo.roomType.imageUrl}}" alt="Room">
+                        </div>
+                        <div class="p-description d-flex align-items-center justify-content-center g-brd-bottom--dotted
+                g-brd-gray-dark-v5 g-px-15 g-py-15">
+                            <span class="g-font-size-12 g-mb-0">
+                                <p th:utext=" ${isFill} ? 'Доступна кількість місць: ' + ${roomInfo.maxPlace}
+                                                            : 'Загальна кількість місць: ' + ${roomInfo.maxPlace}" class="h-38px"></p>
+                                <p th:utext="'Площа: ' + ${roomInfo.area} + ' кв.м.'" class="h-38px"></p>
+                            </span>
+                        </div>
+                        <form th:if = "${isFill}"  id = "formToRent" method="post" action="/success" th:object="${filledRentForm}" class="g-pa-20">
+                            <input type="hidden" name="filledDateFrom" th:field="*{dateFrom}" />
+                            <input type="hidden" name="filledDateTo" th:field="*{dateTo}" />
+                            <input type="hidden" name="id_room" th:field="*{id_room}"/>
+                            <input type="hidden" name="id_tariff" th:field="*{id_tariff}" th:value="${id_tariff}"/>
+                        <a th:id = "${roomInfo.id}" class="btn btn-primary btn-lg rent" >Орендувати</a>
+                        </form>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-light py-5">
+        <div class="container px-4 px-lg-4"><div class="small text-center text-muted">Copyright &copy; 2022 - Work Hub</div></div>
+    </footer>
+
+    <script type="text/javascript" th:src="@{https://cdn.jsdelivr.net/jquery/latest/jquery.min.js}" ></script>
+    <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdn.jsdelivr.net/momentjs/latest/moment.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js}" ></script>
+    <script type="text/javascript" th:src="@{/script/datePick.js}"></script>
+</body>
+</html>

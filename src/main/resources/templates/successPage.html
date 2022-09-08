@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Work Hub</title>
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700}" rel="stylesheet" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic}" rel="stylesheet" type="text/css" />
+    <link th:href= "@{/css/styles.css}" rel="stylesheet" />
+    <link th:href= "@{/css/mainInformationStyle.css}" rel="stylesheet" />
+</head>
+<style>
+    .col-lg-8{
+        background-color: #ff37001a;
+        border-radius: 25px;
+        padding: 120px;
+        box-shadow: 1px 1px 14px 0px #d49696;
+    }
+</style>
+<body>
+    <div class="container px-4 px-lg-5 h-100">
+        <div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
+            <div class="col-lg-8">
+                <p th:text="'Заявка на оренду №' + ${id_rent_application} + ' створена.'"></p>
+                <p>Очікуйте на відповідь адміністратора</p>
+                <a class="btn btn-primary btn-xl" href="/user/myApplication">Мої заявки</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

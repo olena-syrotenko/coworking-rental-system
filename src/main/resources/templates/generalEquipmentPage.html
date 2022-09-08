@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Work Hub</title>
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700}" rel="stylesheet" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic}" rel="stylesheet" type="text/css" />
+    <link th:href= "@{/css/styles.css}" rel="stylesheet" />
+    <link th:href= "@{/css/mainInformationStyle.css}" rel="stylesheet" />
+</head>
+<body id = "page-top">
+<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+    <div class="container px-4 px-lg-5">
+        <a  sec:authorize = "!isAuthenticated()" class="navbar-brand" href="/">Work Hub</a>
+        <a  sec:authorize = "hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')" class="navbar-brand" href="/tariff">Work Hub</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto my-2 my-lg-0">
+                <li sec:authorize = "hasRole('ROLE_USER')"  class="nav-item"><a class="nav-link" href="/user/profile">Кабінет</a></li>
+                <li sec:authorize = "hasRole('ROLE_ADMIN')"  class="nav-item"><a class="nav-link" href="/admin/new">Кабінет</a></li>
+                <li class="nav-item"><a class="nav-link" href="/tariff">Тарифи</a></li>
+                <li class="nav-item"><a class="nav-link" href="/equipment">Техніка</a></li>
+                <li sec:authorize = "!isAuthenticated()" class="nav-item"><a class="nav-link" href="/login">Увійти</a></li>
+                <li sec:authorize = "hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')" class="nav-item"><a class="nav-link" href="/logout">Вийти</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section id="pricing" class="g-pt-80 g-pb-80 page-section">
+    <div class="container px-4 px-lg-5">
+        <div class="u-heading-v2-3--bottom text-uppercase g-mb-30 text-center">
+            <p class="h2 u-heading-v2__title g-mb-10 g-font-weight-700 g-color-secondary">Технічне обладнання</p>
+            <hr class="divider" />
+        </div>
+        <p>Оренда обладнання тимчасово недоступна</p>
+        <div class="row">
+            <div th:each="equipmentInfo : ${equipmentTypes}" class="col-lg-3 col-sm-6 price-item">
+                <article class="scale-down text-center u-block-hover g-brd-around g-bg-gray-light-v5 g-brd-gray-light-v4 g-color-black">
+                    <header class="g-bg-gray-light-v5 g-color-white-opacity-0_7 g-pa-20">
+                        <p th:utext="${equipmentInfo.name}" class="h5 g-color-black text-uppercase g-mb-5">Equipment name</p>
+                    </header>
+                    <div class="item-image test"><img class="w-100" th:src="@{${equipmentInfo.imageUrl}}" alt="Equipment">
+                    </div>
+                    <div class="p-description d-flex align-items-center justify-content-center g-brd-bottom--dotted
+            g-brd-gray-dark-v5 g-px-15 g-py-15">
+                        <span class="g-font-size-12 g-mb-0">
+                            <p>
+                                <strong class="g-font-size-16">&nbsp; <span th:utext="${equipmentInfo.price}">price</span> грн/ time unit</strong>
+                            </p>
+                        </span>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="bg-light py-5">
+    <div class="container px-4 px-lg-4"><div class="small text-center text-muted">Copyright &copy; 2022 - Work Hub</div></div>
+</footer>
+</body>
+</html>

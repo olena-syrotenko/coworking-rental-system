@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Work Hub</title>
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700}" rel="stylesheet" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic}" rel="stylesheet" type="text/css" />
+    <link th:href= "@{/css/styles.css}" rel="stylesheet" />
+    <link th:href= "@{/css/mainInformationStyle.css}" rel="stylesheet" />
+</head>
+<body id = "page-top">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+        <div class="container px-4 px-lg-5">
+            <a  sec:authorize = "!isAuthenticated()" class="navbar-brand" href="/">Work Hub</a>
+            <a  sec:authorize = "hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')" class="navbar-brand" href="/tariff">Work Hub</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto my-2 my-lg-0">
+                    <li sec:authorize = "hasRole('ROLE_USER')"  class="nav-item"><a class="nav-link" href="/user/profile">Кабінет</a></li>
+                    <li sec:authorize = "hasRole('ROLE_ADMIN')"  class="nav-item"><a class="nav-link" href="/admin/new">Кабінет</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/tariff">Тарифи</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/equipment">Техніка</a></li>
+                    <li sec:authorize = "!isAuthenticated()" class="nav-item"><a class="nav-link" href="/login">Увійти</a></li>
+                    <li sec:authorize = "hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')" class="nav-item"><a class="nav-link" href="/logout">Вийти</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+        <section id="pricing" class="g-pt-80 g-pb-80 page-section">
+            <div class="container px-4 px-lg-5">
+                <div class="u-heading-v2-3--bottom text-uppercase g-mb-30 text-center">
+                    <p class="h2 u-heading-v2__title g-mb-10 g-font-weight-700 g-color-secondary">Тарифи</p>
+                    <hr class="divider" />
+                </div>
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            Фільтр
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="/tariff">За замовчуванням</a>
+                            <a class="dropdown-item" href="/tariff/cheap">Від дешевих до дорогих</a>
+                            <a class="dropdown-item" href="/tariff/expensive">Від дорогих до дешевих</a>
+                        </div>
+                    </div>
+
+                <div class="row">
+                    <div th:each="tariffInfo : ${tariffs}" class="col-lg-4 col-sm-6 price-item">
+                        <article class="scale-down text-center u-block-hover g-brd-around g-bg-gray-light-v5 g-brd-gray-light-v4 g-color-black">
+                            <header class="g-bg-gray-light-v5 g-color-white-opacity-0_7 g-pa-20">
+                                <p th:utext="${tariffInfo.name}" class="h5 g-color-black text-uppercase g-mb-5">Tariff name</p>
+                            </header>
+                            <div class="item-image">
+                                <img class="w-100" th:src="@{${tariffInfo.roomType.imageUrl}}" alt="Plan Room">
+                            </div>
+                            <div class="p-description d-flex align-items-center justify-content-center g-brd-bottom--dotted g-brd-gray-dark-v5 g-px-15 g-py-15">
+                                <span class="g-font-size-12 g-mb-0">
+                                    <p th:utext="${tariffInfo.roomType.description}" class="h-38px"></p>
+                                    <p>
+                                        <strong class="g-font-size-16">&nbsp; <span th:utext="${tariffInfo.price}">price</span> грн/ <span th:utext="${tariffInfo.timeUnit.duration}">duration</span></strong>
+                                    </p>
+                                </span>
+                            </div>
+                            <div class="g-pa-20">
+                                <button type="button" class="btn btn-primary btn-lg price-button" data-bs-toggle="modal" th:attr="data-bs-target='#modal'+${tariffInfo.id }" >
+                                    Детальніше
+                                </button>
+
+                                <a sec:authorize = "hasRole('ROLE_USER')" class="btn btn-primary btn-lg" th:href="'/tariff/'+ ${tariffInfo.id} + '/rooms'">Орендувати</a>
+
+                                <div class="modal fade" th:id="'modal' + ${tariffInfo.id}" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="display: none;">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 th:utext="${tariffInfo.name}" class="modal-title" id="exampleModalCenterTitle">Tariff name</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <ul class="check-list">
+                                                    <li th:each="service: ${tariffInfo.services}" th:utext="${service.name}">service line</li>
+                                                </ul>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрити</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <footer class="bg-light py-5">
+        <div class="container px-4 px-lg-4">
+            <div class="small text-center text-muted">Copyright &copy; 2022 - Work Hub</div>
+        </div>
+    </footer>
+
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js}"></script>
+    <script th:src="@{../static/scripts.js}"></script>
+    <script th:src="@{../static/mdb.min.js}"></script>
+    <script th:src="@{https://cdn.startbootstrap.com/sb-forms-latest.js}"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Work Hub</title>
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700}" rel="stylesheet" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic}" rel="stylesheet" type="text/css" />
+    <link th:href= "@{/css/styles.css}" rel="stylesheet" />
+    <link th:href= "@{/css/registrationStyle.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="page-content">
+    <div class="form-v10-content">
+        <form class="form-detail" th:action="@{/registration}" th:object="${userForm}" method="post">
+            <div class="form-left">
+                <h2>Загальна Інформація</h2>
+
+                <div class="form-row">
+                    <input type="email" name="username"  pattern="[^@]+@[^@]+.[a-zA-Z]{2,6}" placeholder="Email"  th:field="*{username}" required>
+                </div>
+                <div class="form-row">
+                    <input type="password" name="password"  placeholder="Password"  th:field="*{password}" required>
+                </div>
+                <div class="form-row">
+                    <input type="text" name="phoneNumber"  placeholder="+380.."  th:field="*{personalData.phoneNumber}" required>
+                </div>
+                <div class="form-group">
+                    <div class="form-row form-row-1">
+                        <input type="text" name="first_name" id="first_name" class="input-text" placeholder="First Name"  th:field="*{personalData.firstName}" required>
+                    </div>
+                    <div class="form-row form-row-2">
+                        <input type="text" name="last_name" id="last_name" class="input-text" placeholder="Last Name"  th:field="*{personalData.lastName}" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <input type="text" name="middle_name" id="middle_name" class="input-text" placeholder="Middle Name" th:field="*{personalData.middleName}">
+                </div>
+
+            </div>
+            <div class="form-right">
+                <h2>Паспортні Дані</h2>
+                <div class="form-row">
+                    <input type="text" name="passport_id" class="passport_id" id="passport_id" placeholder="Passport Number" th:field="*{personalData.passportId}" required>
+                </div>
+                <div class="form-row">
+                    <input type="text" name="authority" class="authority" id="authority" placeholder="Authority" th:field="*{personalData.authority}" required>
+                </div>
+                <div class="form-row">
+                    <input type="text" name="ITN" id="ITN" class="ITN" placeholder="ITN" th:field="*{personalData.ITN}" required>
+                </div>
+                <div class="form-row-last">
+                    <input type="submit" name="register" class="register" value="Зареєструватися">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Work Hub</title>
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700}" rel="stylesheet" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic}" rel="stylesheet" type="text/css" />
+    <link th:href= "@{/css/styles.css}" rel="stylesheet" />
+    <link th:href= "@{/css/logInStyle.css}" rel="stylesheet" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+    <div class="container px-4 px-lg-5">
+        <a  sec:authorize = "!isAuthenticated()" class="navbar-brand" href="/">Work Hub</a>
+        <a  sec:authorize = "hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')" class="navbar-brand" href="/tariff">Work Hub</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto my-2 my-lg-0">
+                <li sec:authorize = "hasRole('ROLE_USER')"  class="nav-item"><a class="nav-link" href="/user/profile">Кабінет</a></li>
+                <li sec:authorize = "hasRole('ROLE_ADMIN')"  class="nav-item"><a class="nav-link" href="/admin/new">Кабінет</a></li>
+                <li class="nav-item"><a class="nav-link" href="/tariff">Тарифи</a></li>
+                <li class="nav-item"><a class="nav-link" href="/equipment">Техніка</a></li>
+                <li sec:authorize = "!isAuthenticated()" class="nav-item"><a class="nav-link" href="/login">Увійти</a></li>
+                <li sec:authorize = "hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')" class="nav-item"><a class="nav-link" href="/logout">Вийти</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="half">
+    <div class="contents order-2 order-md-1">
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-4">
+                    <div class="form-block">
+                        <div class="text-center mb-5">
+                            <h3>Login to <strong>Work Hub</strong></h3>
+                            <p th:if="${loginError}" class="error">Wrong user or password</p>
+                        </div>
+
+                        <form th:action="@{/login}" th:object="${userForm}" method="post">
+                            <div class="form-group first">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" name = "username" placeholder="your-email@gmail.com" id="email" th:field="*{username}" required>
+                            </div>
+                            <div class="form-group last mb-3">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" name = "password" placeholder="Your Password" id="password" th:field="*{password}" required>
+                            </div>
+
+                            <div class="d-sm-flex mb-5 align-items-center">
+                                <div class="form-login">
+                                    <p>Don't Have account? <a href="/registration" class="registration-link">Register</a></p>
+                                    <input type="submit" value="Log In" class="btn btn-block btn-primary">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="bg-light py-5">
+    <div class="container px-4 px-lg-4"><div class="small text-center text-muted">Copyright &copy; 2022 - Work Hub</div></div>
+</footer>
+</body>
+</html>

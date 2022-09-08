@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Work Hub</title>
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
+    <link th:href="@{https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css}" rel="stylesheet" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700}" rel="stylesheet" />
+    <link th:href="@{https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic}" rel="stylesheet" type="text/css" />
+    <link th:href= "@{/css/styles.css}" rel="stylesheet" >
+    <link th:href="@{/css/cabinet4.css}" rel="stylesheet" />
+    <link th:href="@{/css/applicationStyle.css}" rel="stylesheet" />
+    <script th:src="@{/script/cabinet4.js}" async></script>
+</head>
+<style>
+    table td:last-of-type{
+        height: 73px;
+    }
+</style>
+<body >
+<div class="side-navbar active-nav d-flex justify-content-between flex-wrap flex-column"
+     id="sidebar" >
+    <ul class="nav flex-column text-white w-100">
+        <a href="/tariff" class="nav-link h3 text-white my-2">
+            Work Hub
+        </a>
+        <li class="nav-link">
+            <a href="/admin/new" class = "mx-2" >
+                Нові
+            </a>
+        </li>
+        <li href="/user/myApplication" class="nav-link">
+            <a href="/admin/confirmed" class = "mx-2">
+                Підтверджені
+            </a>
+        </li>
+        <li href="/user/myApplication" class="nav-link">
+            <a href="/admin/rejected" class = "mx-2">
+                Відхилені
+            </a>
+        </li>
+        <li href="/user/myApplication" class="nav-link">
+            <a href="/admin/canceled" class = "mx-2">
+                Скасовані
+            </a>
+        </li>
+        <li href="/user/myApplication" class="nav-link">
+            <a href="/admin/paid" class = "mx-2">
+                Сплачені
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="p-1 my-container active-cont">
+    <div class="u-heading-v2-3--bottom text-uppercase g-mb-30 text-center " th:switch="${status}">
+        <p th:case="${T(coworking.rentalsystem.model.StatusType).NEW}" class="h2 u-heading-v2__title g-mb-10 g-font-weight-700 g-color-secondary" style="margin-top: 1.5rem">Нові заявки</p>
+        <p th:case="${T(coworking.rentalsystem.model.StatusType).CONFIRMED}" class="h2 u-heading-v2__title g-mb-10 g-font-weight-700 g-color-secondary" style="margin-top: 1.5rem">Підтверджені заявки</p>
+        <p th:case="${T(coworking.rentalsystem.model.StatusType).REJECTED}" class="h2 u-heading-v2__title g-mb-10 g-font-weight-700 g-color-secondary" style="margin-top: 1.5rem">Відхилені заявки</p>
+        <p th:case="${T(coworking.rentalsystem.model.StatusType).CANCELED}" class="h2 u-heading-v2__title g-mb-10 g-font-weight-700 g-color-secondary" style="margin-top: 1.5rem">Скасовані заявки</p>
+        <p th:case="${T(coworking.rentalsystem.model.StatusType).PAID}" class="h2 u-heading-v2__title g-mb-10 g-font-weight-700 g-color-secondary" style="margin-top: 1.5rem">Сплачені заявки</p>
+        <hr class="divider" />
+    </div>
+
+    <table  class="table table-striped text-center">
+        <tr>
+            <th>Номер заявки</th>
+            <th>Орендатор</th>
+            <th>Створено</th>
+            <th>Сума оренди</th>
+            <th></th>
+            <th></th>
+        </tr>
+
+        <tr th:each="applInfo : ${rentApplications}">
+            <td th:utext="${applInfo.id}">..</td>
+            <td th:utext="${applInfo.user.username}">..</td>
+            <td class="dateToFormat" th:utext="${applInfo.createDate}">..</td>
+            <td th:utext="${applInfo.rentAmount}">..</td>
+
+            <td>
+                <button type="button" class="btn btn-primary btn-lg price-button" data-bs-toggle="modal" th:attr="data-bs-target='#modal'+${applInfo.id }" >
+                    Деталі </button>
+            </td>
+
+            <td>
+                <form method = "post" action="/updateStatus"  th:if="${applInfo.status.name == 'Новий'}">
+                    <input type="number" name = "idApplication" hidden th:value="${applInfo.id}"  />
+                    <input type="number" name = "newStatus" hidden value="2" />
+                    <button type="submit" class="btn btn-primary btn-lg "  >
+                        Підтвердити
+                    </button>
+                </form>
+                <form method = "post" action="/updateStatus"  th:if="${applInfo.status.name == 'Новий'}">
+                    <input type="number" name = "idApplication" hidden th:value="${applInfo.id}" />
+                    <input type="number" name = "newStatus" hidden value="3" />
+                    <button type="submit" class="btn btn-primary btn-lg " >
+                        Відхилити
+                    </button>
+                </form>
+                <form method = "post" action="/viewLeaseAgreement"  th:if="${applInfo.status.name == 'Сплачено'}">
+                    <input type="number" name = "idApplication" hidden th:value="${applInfo.id}" />
+                    <button type="submit" class="btn btn-primary btn-lg " >
+                        Договір
+                    </button>
+                </form>
+            </td>
+
+            <div class="modal fade" th:id="'modal' + ${applInfo.id}" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 th:utext="'Заявка на оренду №' + ${applInfo.id}" class="modal-title" id="exampleModalCenterTitle">appl number</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <ul>
+                                <li class="arrow" >
+                                    <span th:text="'Створено: #' + ${applInfo.user.id} + ', ' + ${applInfo.user.personalData.lastName} + ' ' + ${applInfo.user.personalData.firstName} + ' ' + ${applInfo.user.personalData.middleName}"></span>
+                                    <br>
+                                    <span th:text="'&nbsp;&nbsp; контакти: ' + ${applInfo.user.personalData.phoneNumber}"></span>
+                                    <br>
+                                    <span th:text="'&nbsp;&nbsp;&nbsp;&nbsp;  паспортні дані: '"></span>
+                                    <br>
+                                    <span th:text="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  номер паспорту: ' + ${applInfo.user.personalData.passportId}"></span>
+                                    <br>
+                                    <span th:text="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  орган, що видав: ' + ${applInfo.user.personalData.authority}"></span>
+                                    <br>
+                                    <span th:text="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  РНОКПП: ' + ${applInfo.user.personalData.ITN}"></span>
+                                </li>
+                                <li class="arrow" >
+                                    Дата створення: <span class="dateToFormat" th:utext="${applInfo.createDate}"></span>
+                                </li>
+                                <li class="arrow" >
+                                    Початок оренди: <span class="dateToFormat" th:utext="${applInfo.rentStart}"></span>
+                                </li>
+                                <li class="arrow"  >
+                                    Кінець оренди: <span class="dateToFormat" th:utext="${applInfo.rentEnd}"></span>
+                                </li>
+                                <li class="arrow" th:utext="'Місце №: ' + ${applInfo.place.id}"}>place id</li>
+                                <li class="arrow" th:utext="'Кімната: ROOM ' + ${applInfo.place.room.id} + ', ' + ${applInfo.place.room.roomType.name}"}>room inf</li>
+                                <li class="arrow" th:utext="'Тариф: ' + ${applInfo.tariff.name}"}>tariff name</li>
+                                <li class="arrow" th:utext="'Сума оренди: ' + ${applInfo.rentAmount}"}>rent amount</li>
+                                <li class="arrow" th:utext="'Сатус заявки: ' + ${applInfo.status.name}"}>rent amount</li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрити</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </tr>
+    </table>
+</div>
+<script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

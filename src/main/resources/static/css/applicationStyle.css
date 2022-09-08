@@ -1,0 +1,22 @@
+ul {
+    line-height: 1.5em;
+    margin: 5px 0 15px;
+    padding: 0;
+}
+
+li {
+    list-style: none;
+    position: relative;
+    padding: 0 0 0 20px;
+}
+li.arrow::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    height: 5px;
+    width: 5px;
+    border: 1px solid rgba(244, 98, 58, 1);
+    border-width: 2px 2px 0 0;
+    transform: rotate(45deg);
+}

@@ -1,0 +1,68 @@
+.side-navbar {
+    width: 180px;
+    height: 100%;
+    position: fixed;
+    margin-left: -300px;
+    background-color: #f4623a;
+    transition: 0.5s;
+}
+.nav-link:active,
+.nav-link:focus,
+.nav-link:hover {
+    background-color: #ffffff26;
+}
+.my-container {
+    transition: 0.4s;
+}
+.active-nav {
+    margin-left: 0;
+}
+/* for main section */
+.active-cont {
+    margin-left: 180px;
+}
+#menu-btn {
+    background-color: #100901;
+    color: #fff;
+    margin-left: -62px;
+}
+.navbar {
+    background-color: #f4623a;
+    height: 50px;
+}
+.side-navbar a {
+    color: #ffffff;
+    text-decoration: none;
+}
+.card {
+    width: 80%;
+}
+.card-wrapper {
+    margin-left: 20%;
+    width: 80%;
+}
+.w-70 {
+    width: 80%;
+}
+h6 {
+    font-size: 1.4rem;
+}
+
+table td:last-of-type{
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    height: 72px;
+}
+.btn-cancel {
+    color: #f4623a;
+    background-color: white;
+}
+.btn-cancel:hover {
+    color: white;
+    background-color: #f4623a;
+}
+select{
+    width: 13% !important;
+    margin: 10px;
+}
