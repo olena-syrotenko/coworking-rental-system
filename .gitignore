@@ -45,4 +45,3 @@ build/
 ### Maven ###
 mvnw
 mvnw.cmd
-pom.xml
